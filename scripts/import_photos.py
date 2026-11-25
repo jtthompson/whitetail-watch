@@ -140,7 +140,7 @@ def main():
                 print(f'Skipped {path.name}: {exc}')
                 continue
             camera = (meta.get('camera')
-                      or (path.parent.name if path.parent != INBOX else None)
+                      or (path.parent.name.replace('_', ' ').title() if path.parent != INBOX else None)
                       or camera_from_id(path.name)).replace('_', ' ')
             out_name = f'{when[:10]}-{digest}.jpg'
             save_clean(img, DEST / out_name, FULL_MAX, 84)
