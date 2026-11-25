@@ -1,3 +1,22 @@
 {
-  "photos": []
+  "photos": [
+    {
+      "id": "b3102b4e83e4ad689488",
+      "title": "Visitor at Camera 8142",
+      "type": "Other",
+      "camera": "Camera 8142",
+      "captured_at": "2026-11-20 06:17",
+      "url": "photos/2026-11-20-b3102b4e83e4ad689488.jpg",
+      "thumb": "photos/thumbs/2026-11-20-b3102b4e83e4ad689488.jpg"
+    },
+    {
+      "id": "3ac5bd23a5447971ba2e",
+      "title": "Visitor at Camera 8793",
+      "type": "Other",
+      "camera": "Camera 8793",
+      "captured_at": "2026-11-19 19:30",
+      "url": "photos/2026-11-19-3ac5bd23a5447971ba2e.jpg",
+      "thumb": "photos/thumbs/2026-11-19-3ac5bd23a5447971ba2e.jpg"
+    }
+  ]
 }
