@@ -1,0 +1,75 @@
+name: Publish trail-cam photos
+
+on:
+  push:
+    branches: [main]
+    paths: ["uploads/inbox/**"]   # runs when you upload photos to the inbox
+  schedule:
+    - cron: "23 */3 * * *"        # every 3 hours (UTC) - checks Reveal if set up
+  workflow_dispatch:               # "Run workflow" button on the Actions tab
+    inputs:
+      debug:
+        description: "Save a screenshot of the Reveal page (may show your email)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      HAS_REVEAL: ${{ secrets.REVEAL_EMAIL != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pillow
+        run: pip install pillow
+
+      # Optional: only runs if you added REVEAL_EMAIL / REVEAL_PASSWORD secrets.
+      - name: Download new photos from Reveal
+        if: ${{ env.HAS_REVEAL == 'true' }}
+        env:
+          REVEAL_EMAIL: ${{ secrets.REVEAL_EMAIL }}
+          REVEAL_PASSWORD: ${{ secrets.REVEAL_PASSWORD }}
+          REVEAL_LOGIN_URL: ${{ vars.REVEAL_LOGIN_URL || 'https://account.revealcellcam.com' }}
+          REVEAL_GALLERY_URL: ${{ vars.REVEAL_GALLERY_URL }}
+          REVEAL_DEBUG: ${{ inputs.debug && '1' || '0' }}
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+          python scripts/fetch_reveal.py
+        continue-on-error: true
+
+      - name: Publish photos (strip GPS, resize, update gallery)
+        run: python scripts/import_photos.py
+
+      - name: Commit changes
+        run: |
+          git config user.name  "whitetail-watch-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A docs uploads
+          if git diff --cached --quiet; then
+            echo "Nothing new."
+          else
+            git commit -m "Publish trail-cam photos ($(date -u +%F))"
+            git push
+          fi
+
+      - name: Save Reveal debug info
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reveal-debug
+          path: debug/
+          retention-days: 3
+          if-no-files-found: ignore
