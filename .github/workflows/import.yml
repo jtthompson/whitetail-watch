@@ -3,7 +3,7 @@ name: Publish trail-cam photos
 on:
   push:
     branches: [main]
-    paths: ["uploads/inbox/**"]   # runs when you upload photos to the inbox
+    paths: ["uploads/inbox/**", "docs/edits.json", "archive.json"]   # new uploads, owner edits, archive settings
   schedule:
     - cron: "23 * * * *"        # every hour (UTC) - checks Reveal if set up
   workflow_dispatch:               # "Run workflow" button on the Actions tab
@@ -50,8 +50,21 @@ jobs:
           python scripts/fetch_reveal.py
         continue-on-error: true
 
-      - name: Publish photos (strip GPS, resize, update gallery)
+      - name: Publish photos (strip GPS, resize, update gallery, apply removals)
         run: python scripts/import_photos.py
+
+      # Off until archive.json says "enabled": true. Zips older photos into a
+      # GitHub release first, and only then removes them from the site.
+      - name: Archive older photos
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python scripts/archive_photos.py prepare
+          if [ -f build/archive.zip ]; then
+            tag="photos-archive-$(date -u +%Y%m%d-%H%M)"
+            gh release create "$tag" build/archive.zip --title "Photo archive $(date -u +%F)" --notes-file build/archive-notes.md
+            python scripts/archive_photos.py finalize
+          fi
 
       - name: Commit changes
         run: |
@@ -62,7 +75,9 @@ jobs:
             echo "Nothing new."
           else
             git commit -m "Publish trail-cam photos ($(date -u +%F))"
-            git push
+            # Owner edits saved from the website while this ran are kept.
+            git pull --rebase origin main
+            git push || { sleep 10; git pull --rebase origin main; git push; }
           fi
 
       - name: Save Reveal debug info
