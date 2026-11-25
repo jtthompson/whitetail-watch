@@ -16,6 +16,8 @@ Camera name: the sub-folder it was uploaded into (uploads/inbox/North_Ridge/...)
 Animal type: put "buck" or "doe" in the file or folder name, otherwise "Other".
              You can always change it later in docs/gallery.json.
 
+Photos taken before START_DATE (below) are skipped.
+
 Run with --keep to leave originals in the inbox (only do that on your own PC).
 """
 import hashlib
@@ -36,6 +38,7 @@ CAMERAS = ROOT / 'docs' / 'cameras.json'   # camera ID -> name you choose
 EXTS = {'.jpg', '.jpeg', '.png', '.webp'}
 FULL_MAX, THUMB_MAX = 1800, 700          # pixels on the long edge
 DATE_TAGS = (36867, 36868, 306)          # DateTimeOriginal, Digitized, DateTime
+START_DATE = '2026-10-15'                # photos taken before this are not published
 
 
 def sidecar(path):
@@ -142,6 +145,12 @@ def main():
                     img = ImageOps.exif_transpose(raw).convert('RGB')
             except Exception as exc:
                 print(f'Skipped {path.name}: {exc}')
+                continue
+            if when < START_DATE:
+                print(f'Skipped {path.name}: taken {when}, before {START_DATE}')
+                if not keep:
+                    path.unlink()
+                    path.with_name(path.name + '.json').unlink(missing_ok=True)
                 continue
             # Folder name wins; then the name saved for this camera ID in
             # docs/cameras.json; Reveal's own label is only used for new cameras.
