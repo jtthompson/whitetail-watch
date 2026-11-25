@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths: ["uploads/inbox/**"]   # runs when you upload photos to the inbox
   schedule:
-    - cron: "23 */3 * * *"        # every 3 hours (UTC) - checks Reveal if set up
+    - cron: "23 * * * *"        # every hour (UTC) - checks Reveal if set up
   workflow_dispatch:               # "Run workflow" button on the Actions tab
     inputs:
       debug:
