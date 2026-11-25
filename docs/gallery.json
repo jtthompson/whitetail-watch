@@ -1,6 +1,33 @@
 {
   "photos": [
     {
+      "id": "d70960bdafefae753e45",
+      "title": "Visitor at Power Line",
+      "type": "Other",
+      "camera": "Power Line",
+      "captured_at": "2026-11-25 06:30",
+      "url": "photos/2026-11-25-d70960bdafefae753e45.jpg",
+      "thumb": "photos/thumbs/2026-11-25-d70960bdafefae753e45.jpg"
+    },
+    {
+      "id": "5b86bfdc2c8f6f7cbecf",
+      "title": "Visitor at Power Line",
+      "type": "Other",
+      "camera": "Power Line",
+      "captured_at": "2026-11-25 06:18",
+      "url": "photos/2026-11-25-5b86bfdc2c8f6f7cbecf.jpg",
+      "thumb": "photos/thumbs/2026-11-25-5b86bfdc2c8f6f7cbecf.jpg"
+    },
+    {
+      "id": "eee607f51159a19f683b",
+      "title": "Visitor at Power Line",
+      "type": "Other",
+      "camera": "Power Line",
+      "captured_at": "2026-11-25 06:18",
+      "url": "photos/2026-11-25-eee607f51159a19f683b.jpg",
+      "thumb": "photos/thumbs/2026-11-25-eee607f51159a19f683b.jpg"
+    },
+    {
       "id": "637160c500d8bb79b2a0",
       "title": "Visitor at Feeder",
       "type": "Other",
