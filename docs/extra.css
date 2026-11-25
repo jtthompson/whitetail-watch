@@ -1,0 +1,15 @@
+.hero-pic.live{cursor:zoom-in;background-position:center}
+.hero-pic.live::after{content:"";position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(transparent,#0b140fcc);pointer-events:none}
+.photo-label{z-index:1}
+.photo-label span{display:block;margin-top:8px;font-size:12px;letter-spacing:1px;color:#e4ead8}
+.hero-pic.live:focus-visible{outline:3px solid #bbca9d;outline-offset:-3px}
+.filter-rows{margin:38px 0 27px;display:grid;gap:12px}
+.filter-rows .filters{margin:0;align-items:center}
+.filter-label{font-size:10px;letter-spacing:2px;font-weight:700;width:70px;color:#425248}
+.filters button{min-height:40px}
+.filters button:focus-visible{outline:2px solid #1c3425;outline-offset:2px}
+.tile-tag .new{background:#bbca9d;color:#12221a;padding:2px 6px;margin-left:6px;letter-spacing:1px}
+.lb-bar{display:flex;align-items:center;gap:10px}
+.lb-bar #detail{flex:1;text-align:center}
+.lb-bar button{border:1px solid #c8cdc2;background:transparent;color:#13271e;font-size:24px;width:44px;height:44px;cursor:pointer}
+@media(max-width:540px){.filter-label{width:100%}.hero-pic{height:260px}}
