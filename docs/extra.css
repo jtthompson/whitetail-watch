@@ -27,7 +27,11 @@
 .tile.gone img{opacity:.3;filter:grayscale(1)}
 .tile.gone .adm-del{background:#bbca9d;color:#12221a}
 .gone-note{margin:10px 0 0;color:#9a3b1f;font-size:12px;font-weight:600}
-.owner-link{background:none;border:0;color:inherit;font:inherit;letter-spacing:2px;text-transform:uppercase;cursor:pointer;padding:6px 4px;text-decoration:underline;text-underline-offset:3px}
+.owner-link{background:transparent;border:1px solid #324338;border-radius:30px;color:#cdd4c6;font:600 11px 'DM Sans',sans-serif;letter-spacing:.5px;cursor:pointer;padding:0 14px;min-height:36px;white-space:nowrap}
+.owner-link:hover,.owner-link:focus-visible{border-color:#afbf87;color:#f7f6e9;outline:none}
+body.owner .owner-link{background:#bbca9d;border-color:#bbca9d;color:#12221a}
+@media(max-width:800px){.owner-link{margin-left:auto}}
+@media(max-width:540px){.topbar{gap:12px;padding:0 14px}.logo{font-size:18px;gap:8px}.mark{font-size:26px}.logo small{letter-spacing:2px}.owner-link{padding:0 12px;font-size:11px}}
 .admin-bar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:20;display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#111c16;color:#e7ecdf;padding:10px 12px 10px 18px;box-shadow:0 8px 30px #0006;max-width:calc(100vw - 24px);font-size:13px}
 .admin-bar span{flex:1 1 220px}
 .admin-bar button{min-height:40px;padding:0 14px;border:1px solid #3d5244;background:transparent;color:#e7ecdf;font:600 12px 'DM Sans',sans-serif;cursor:pointer}
