@@ -13,8 +13,8 @@ Environment variables (set as GitHub Actions secrets / variables):
   REVEAL_EMAIL, REVEAL_PASSWORD   required - your Reveal sign-in
   REVEAL_LOGIN_URL                default https://account.revealcellcam.com/login
   REVEAL_GALLERY_URL              optional - page to open after sign-in
-  REVEAL_MAX_SCROLLS              default 15 - how far to scroll the feed
-  REVEAL_MAX_NEW                  default 60 - most photos to download per run
+  REVEAL_MAX_SCROLLS              default 300 - safety cap on feed scrolling
+  REVEAL_MAX_NEW                  default 500 - most photos to download per run
   REVEAL_DEBUG=1                  save debug/screenshot.png (may show your email)
 
 Because Reveal can change its website at any time, this is best-effort. If it
@@ -38,8 +38,8 @@ LOGIN_URL = os.environ.get("REVEAL_LOGIN_URL") or "https://account.revealcellcam
 if urlsplit(LOGIN_URL).path in ("", "/"):  # the home page only has a "Log in" button
     LOGIN_URL = LOGIN_URL.rstrip("/") + "/login"
 GALLERY_URL = os.environ.get("REVEAL_GALLERY_URL", "")
-MAX_SCROLLS = int(os.environ.get("REVEAL_MAX_SCROLLS") or "15")
-MAX_NEW = int(os.environ.get("REVEAL_MAX_NEW") or "60")
+MAX_SCROLLS = int(os.environ.get("REVEAL_MAX_SCROLLS") or "300")
+MAX_NEW = int(os.environ.get("REVEAL_MAX_NEW") or "500")
 PHOTO_API = "/photos"            # only read the photo-list responses
 PHOTO_HOST = "amazonaws.com"     # where Reveal stores the actual pictures
 
@@ -49,6 +49,14 @@ URL_KEYS_WORST = ("thumb", "small", "preview", "icon", "avatar", "logo")
 CAMERA_KEYS = ("cameraName", "camera_name", "deviceName", "device_name", "cameraTitle")
 DATE_KEYS = ("photoDate", "takenAt", "taken_at", "dateTaken", "captureDate",
              "capturedAt", "photo_date", "createdAt", "created_at", "timestamp", "date")
+
+
+SCROLL_JS = """() => {
+  const boxes = [...document.querySelectorAll('*')].filter(e =>
+      e.scrollHeight > e.clientHeight + 50 && /(auto|scroll)/.test(getComputedStyle(e).overflowY));
+  for (const b of boxes) b.scrollTop = b.scrollHeight;
+  window.scrollTo(0, document.body.scrollHeight);
+}"""
 
 
 def key_of(url: str) -> str:
@@ -166,9 +174,21 @@ def main() -> int:
         if GALLERY_URL:
             page.goto(GALLERY_URL, wait_until="networkidle", timeout=60_000)
 
-        for _ in range(MAX_SCROLLS):  # infinite-scroll galleries load more as you scroll
-            page.mouse.wheel(0, 4000)
+        # Reveal's feed scrolls inside a panel, not the page, and loads older
+        # photos as it reaches the bottom. Scroll that panel to the end until
+        # no more photos arrive.
+        stale = 0
+        for _ in range(MAX_SCROLLS):
+            before = len(found)
+            page.evaluate(SCROLL_JS)
             page.wait_for_timeout(1_500)
+            if len(found) == before:
+                stale += 1
+                if stale >= 4:
+                    break
+            else:
+                stale = 0
+        print(f"Feed scrolled; {len(found)} photo(s) listed.")
 
         # Backup: large images actually shown on the page.
         for src in page.eval_on_selector_all(
