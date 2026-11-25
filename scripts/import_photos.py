@@ -48,8 +48,14 @@ def sidecar(path):
 
 
 def taken(img, path, meta):
-    if meta.get('taken'):
-        return str(meta['taken']).replace('T', ' ')[:16]
+    # Reveal file names hold the camera's local time - the most reliable source.
+    m = re.search(r'(?<!\d)(\d\d)(\d\d)(20\d\d)(\d\d)(\d\d)(\d\d)(?!\d)', path.name)
+    if m:
+        mo, d, y, h, mi, _ = map(int, m.groups())
+        try:
+            return datetime(y, mo, d, h, mi).strftime('%Y-%m-%d %H:%M')
+        except ValueError:
+            pass
     exif = img.getexif()
     sub = exif.get_ifd(0x8769)  # date tags usually live in the Exif sub-block
     for tag in DATE_TAGS:
@@ -59,15 +65,8 @@ def taken(img, path, meta):
                 return datetime.strptime(str(val).strip()[:19], '%Y:%m:%d %H:%M:%S').strftime('%Y-%m-%d %H:%M')
             except ValueError:
                 pass
-    # Reveal app names files like  <camera id>-61-3-11192026193044-SYFW01252.jpg
-    #                               (MM DD YYYY HH MM SS)
-    m = re.search(r'(?<!\d)(\d\d)(\d\d)(20\d\d)(\d\d)(\d\d)(\d\d)(?!\d)', path.name)
-    if m:
-        mo, d, y, h, mi, _ = map(int, m.groups())
-        try:
-            return datetime(y, mo, d, h, mi).strftime('%Y-%m-%d %H:%M')
-        except ValueError:
-            pass
+    if meta.get('taken'):
+        return str(meta['taken']).replace('T', ' ')[:16]
     m = re.search(r'(20\d\d)[-_]?(\d\d)[-_]?(\d\d)[T_ -]?(\d\d)[-_:]?(\d\d)', path.name)
     if m:
         try:
@@ -85,15 +84,20 @@ def load_cameras():
         return {}
 
 
-def camera_from_id(name):
+def clean_name(name):
+    """'FEEDER - SPRINGVILLE' -> 'Feeder' (drop the location part Reveal adds)."""
+    return name.split(' - ')[0].replace('_', ' ').strip().title() if name else None
+
+
+def camera_from_id(name, suggested=None):
     """Reveal file names start with the camera's 15-digit ID."""
     m = re.match(r'(\d{15})-', name)
     if not m:
-        return 'Trail Camera'
+        return suggested or 'Trail Camera'
     cid = m.group(1)
     names = load_cameras()
     if cid not in names:  # remember new cameras so you can rename them later
-        names[cid] = f'Camera {cid[-4:]}'
+        names[cid] = suggested or f'Camera {cid[-4:]}'
         CAMERAS.write_text(json.dumps(names, indent=2) + '\n', encoding='utf-8')
     return names[cid]
 
@@ -139,16 +143,17 @@ def main():
             except Exception as exc:
                 print(f'Skipped {path.name}: {exc}')
                 continue
-            camera = (meta.get('camera')
-                      or (path.parent.name.replace('_', ' ').title() if path.parent != INBOX else None)
-                      or camera_from_id(path.name)).replace('_', ' ')
+            # Folder name wins; then the name saved for this camera ID in
+            # docs/cameras.json; Reveal's own label is only used for new cameras.
+            camera = ((path.parent.name.replace('_', ' ').title() if path.parent != INBOX else None)
+                      or camera_from_id(path.name, clean_name(meta.get('camera'))))
             out_name = f'{when[:10]}-{digest}.jpg'
             save_clean(img, DEST / out_name, FULL_MAX, 84)
             save_clean(img, THUMBS / out_name, THUMB_MAX, 75)
             kind = animal(path, meta)
             entries.append({
                 'id': digest,
-                'title': meta.get('title') or f'{kind if kind != "Other" else "Visitor"} at {camera}',
+                'title': f'{kind if kind != "Other" else "Visitor"} at {camera}',
                 'type': kind,
                 'camera': camera,
                 'captured_at': when,

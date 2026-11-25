@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
 """Download new photos from your Tactacam Reveal web account.
 
-Reveal has no public API, so this signs in to the Reveal website with a
-headless browser (Playwright), lets the gallery load, and collects photo URLs
-from the data the site itself loads (plus any large <img> tags as a backup).
-New photos are saved to  uploads/inbox/  with a small .json sidecar holding the
-camera name and capture time when the site provides them.
+Reveal has no public API, so this signs in to the Reveal website
+(account.revealcellcam.com) with a headless browser (Playwright), lets the
+home feed load, and collects photo URLs from the photo list the site itself
+loads from its data service (api.reveal.ishareit.net/v1/photos/v2). Photos are
+stored on Amazon S3 under Reveal's own file names, which carry the camera ID
+and capture time, and are saved under those names to  uploads/inbox/  with a
+small .json sidecar holding the camera name the site shows.
 
 Environment variables (set as GitHub Actions secrets / variables):
   REVEAL_EMAIL, REVEAL_PASSWORD   required - your Reveal sign-in
-  REVEAL_LOGIN_URL                default https://account.revealcellcam.com
+  REVEAL_LOGIN_URL                default https://account.revealcellcam.com/login
   REVEAL_GALLERY_URL              optional - page to open after sign-in
-  REVEAL_MAX_SCROLLS              default 15 - how far to scroll the gallery
+  REVEAL_MAX_SCROLLS              default 15 - how far to scroll the feed
+  REVEAL_MAX_NEW                  default 60 - most photos to download per run
   REVEAL_DEBUG=1                  save debug/screenshot.png (may show your email)
 
 Because Reveal can change its website at any time, this is best-effort. If it
@@ -31,9 +34,14 @@ OUT = ROOT / "uploads" / "inbox"
 DEBUG = ROOT / "debug"
 SEEN_FILE = ROOT / "uploads" / "reveal_seen.json"
 
-LOGIN_URL = os.environ.get("REVEAL_LOGIN_URL", "https://account.revealcellcam.com")
+LOGIN_URL = os.environ.get("REVEAL_LOGIN_URL") or "https://account.revealcellcam.com/login"
+if urlsplit(LOGIN_URL).path in ("", "/"):  # the home page only has a "Log in" button
+    LOGIN_URL = LOGIN_URL.rstrip("/") + "/login"
 GALLERY_URL = os.environ.get("REVEAL_GALLERY_URL", "")
-MAX_SCROLLS = int(os.environ.get("REVEAL_MAX_SCROLLS", "15"))
+MAX_SCROLLS = int(os.environ.get("REVEAL_MAX_SCROLLS") or "15")
+MAX_NEW = int(os.environ.get("REVEAL_MAX_NEW") or "60")
+PHOTO_API = "/photos"            # only read the photo-list responses
+PHOTO_HOST = "amazonaws.com"     # where Reveal stores the actual pictures
 
 IMG_RE = re.compile(r"^https?://[^\s\"']+\.(?:jpe?g|png|webp)(?:\?[^\s\"']*)?$", re.I)
 URL_KEYS_BEST = ("original", "hd", "full", "large", "highres", "download")
@@ -98,7 +106,8 @@ def normalise_date(val):
 def sign_in(page, email, password):
     page.goto(LOGIN_URL, wait_until="domcontentloaded", timeout=60_000)
     page.wait_for_timeout(2_000)
-    email_box = page.locator("input[type=email], input[name*=email i], input[name*=user i]").first
+    email_box = page.locator('input[placeholder*="EMAIL" i], input[type=email], '
+                             'input[name*=email i], input[name*=user i]').first
     email_box.fill(email, timeout=20_000)
     pw_box = page.locator("input[type=password]").first
     if not pw_box.is_visible():  # two-step forms: email first, then password
@@ -106,6 +115,16 @@ def sign_in(page, email, password):
         page.wait_for_timeout(2_000)
     pw_box.fill(password, timeout=20_000)
     page.keyboard.press("Enter")
+    try:
+        page.wait_for_url(lambda u: "/login" not in u, timeout=20_000)
+    except PWTimeout:
+        submit = page.locator("button[type=submit]").first
+        if submit.count():
+            submit.click()
+        try:
+            page.wait_for_url(lambda u: "/login" not in u, timeout=30_000)
+        except PWTimeout:
+            pass
     try:
         page.wait_for_load_state("networkidle", timeout=45_000)
     except PWTimeout:
@@ -135,7 +154,7 @@ def main() -> int:
 
         def on_response(resp):
             ctype = resp.headers.get("content-type", "")
-            if "json" in ctype:
+            if "json" in ctype and PHOTO_API in urlsplit(resp.url).path:
                 api_log.append(f"{resp.status} {key_of(resp.url)}")
                 try:
                     walk(resp.json(), found, {})
@@ -155,25 +174,27 @@ def main() -> int:
         for src in page.eval_on_selector_all(
             "img", "els => els.filter(e => e.naturalWidth >= 600).map(e => e.currentSrc || e.src)"
         ):
-            if src.startswith("http"):
+            if src.startswith("http") and PHOTO_HOST in urlsplit(src).netloc:
                 found.setdefault(key_of(src), {"url": src})
 
         if os.environ.get("REVEAL_DEBUG") == "1":
             page.screenshot(path=str(DEBUG / "screenshot.png"), full_page=True)
         (DEBUG / "api_calls.txt").write_text("\n".join(api_log) + "\n")
 
-        new = [(k, v) for k, v in found.items() if k not in seen]
-        print(f"Found {len(found)} photo URL(s), {len(new)} new.")
+        new = [(k, v) for k, v in found.items() if k not in seen][:MAX_NEW]
+        print(f"Found {len(found)} photo URL(s), downloading {len(new)} new.")
         for i, (k, info) in enumerate(new):
             try:
                 r = context.request.get(info["url"], timeout=60_000)
                 if not r.ok or "image" not in r.headers.get("content-type", "image"):
                     print(f"  skip {k}: HTTP {r.status}")
                     continue
-                ext = Path(urlsplit(info["url"]).path).suffix.lower() or ".jpg"
-                dest = OUT / f"reveal_{i:04d}_{abs(hash(k)) % 10**8}{ext}"
+                # Keep Reveal's own file name: it holds the camera ID and capture time.
+                name = re.sub(r"[^\w.() -]", "_", Path(urlsplit(info["url"]).path).name) or f"reveal_{i:04d}.jpg"
+                dest = OUT / name
                 dest.write_bytes(r.body())
-                meta = {"camera": info.get("camera"), "taken": normalise_date(info.get("taken"))}
+                meta = {"camera": info.get("camera"), "taken": normalise_date(info.get("taken")),
+                        "source": "reveal"}
                 dest.with_name(dest.name + ".json").write_text(json.dumps(meta))
                 seen.add(k)
             except Exception as exc:
