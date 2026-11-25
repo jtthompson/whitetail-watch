@@ -1,6 +1,33 @@
 {
   "photos": [
     {
+      "id": "637160c500d8bb79b2a0",
+      "title": "Visitor at Feeder",
+      "type": "Other",
+      "camera": "Feeder",
+      "captured_at": "2026-11-25 02:36",
+      "url": "photos/2026-11-25-637160c500d8bb79b2a0.jpg",
+      "thumb": "photos/thumbs/2026-11-25-637160c500d8bb79b2a0.jpg"
+    },
+    {
+      "id": "f51dc70b391b125f783f",
+      "title": "Visitor at Feeder",
+      "type": "Other",
+      "camera": "Feeder",
+      "captured_at": "2026-11-25 02:35",
+      "url": "photos/2026-11-25-f51dc70b391b125f783f.jpg",
+      "thumb": "photos/thumbs/2026-11-25-f51dc70b391b125f783f.jpg"
+    },
+    {
+      "id": "13965d9e35c851b66e92",
+      "title": "Visitor at Feeder",
+      "type": "Other",
+      "camera": "Feeder",
+      "captured_at": "2026-11-25 02:35",
+      "url": "photos/2026-11-25-13965d9e35c851b66e92.jpg",
+      "thumb": "photos/thumbs/2026-11-25-13965d9e35c851b66e92.jpg"
+    },
+    {
       "id": "2f7c6db8e1ad500c92c8",
       "title": "Visitor at Feeder",
       "type": "Other",
