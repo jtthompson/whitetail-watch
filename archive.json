@@ -1,0 +1,5 @@
+{
+  "enabled": false,
+  "older_than_days": 120,
+  "min_photos": 50
+}

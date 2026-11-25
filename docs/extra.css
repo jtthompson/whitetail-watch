@@ -13,3 +13,38 @@
 .lb-bar #detail{flex:1;text-align:center}
 .lb-bar button{border:1px solid #c8cdc2;background:transparent;color:#13271e;font-size:24px;width:44px;height:44px;cursor:pointer}
 @media(max-width:540px){.filter-label{width:100%}.hero-pic{height:260px}}
+.favs{padding-bottom:20px}
+.fav-strip{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:30px 2px 18px}
+.fav-strip .tile{flex:0 0 min(320px,78vw);scroll-snap-align:start}
+.fav-empty{color:#68746b;font-size:14px}
+.tile{position:relative}
+.tile-tag .star{color:#b8860b;margin-left:8px;font-size:12px;letter-spacing:0}
+.adm{position:absolute;top:10px;right:10px;display:flex;gap:6px;z-index:2}
+.adm button{min-width:44px;height:40px;padding:0 12px;border:0;background:#f7f6efe6;color:#13271e;font:600 12px 'DM Sans',sans-serif;cursor:pointer;box-shadow:0 1px 4px #0004}
+.adm .adm-fav{font-size:20px;line-height:1}
+.adm .adm-fav.on{color:#b8860b}
+.adm .adm-del{background:#13271ee6;color:#f7f6ef}
+.tile.gone img{opacity:.3;filter:grayscale(1)}
+.tile.gone .adm-del{background:#bbca9d;color:#12221a}
+.gone-note{margin:10px 0 0;color:#9a3b1f;font-size:12px;font-weight:600}
+.owner-link{background:none;border:0;color:inherit;font:inherit;letter-spacing:2px;text-transform:uppercase;cursor:pointer;padding:6px 4px;text-decoration:underline;text-underline-offset:3px}
+.admin-bar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:20;display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#111c16;color:#e7ecdf;padding:10px 12px 10px 18px;box-shadow:0 8px 30px #0006;max-width:calc(100vw - 24px);font-size:13px}
+.admin-bar span{flex:1 1 220px}
+.admin-bar button{min-height:40px;padding:0 14px;border:1px solid #3d5244;background:transparent;color:#e7ecdf;font:600 12px 'DM Sans',sans-serif;cursor:pointer}
+.admin-bar #saveEdits{background:#bbca9d;color:#12221a;border-color:#bbca9d}
+.admin-bar button:disabled{opacity:.45;cursor:default}
+body.owner{padding-bottom:90px}
+#ownerDlg{max-width:min(92vw,460px);padding:26px}
+#ownerDlg h3{font:600 26px Oswald,sans-serif;margin:0 0 10px}
+#ownerDlg p{font-size:14px;color:#425248;line-height:1.6}
+#ownerDlg label{display:block;font-size:10px;letter-spacing:2px;font-weight:700;margin-top:14px}
+#ownerDlg input{width:100%;font:16px 'DM Sans',sans-serif;padding:12px;margin-top:6px;border:1px solid #c8cdc2;background:#fff}
+.dlg-err{min-height:1.4em;color:#9a3b1f!important}
+.dlg-btns{display:flex;justify-content:flex-end;gap:10px}
+.dlg-btns button{min-height:44px;padding:0 18px;border:1px solid #c8cdc2;background:transparent;font:600 13px 'DM Sans',sans-serif;cursor:pointer}
+.dlg-btns #ownerGo{background:#1c3425;color:#fafbf5;border-color:#1c3425}
+.lb-admin{display:flex;justify-content:center;gap:10px;padding:4px 0 2px}
+.lb-admin button{min-height:44px;padding:0 16px;border:1px solid #c8cdc2;background:transparent;color:#13271e;font:600 13px 'DM Sans',sans-serif;cursor:pointer}
+.lb-admin #lbFav.on{color:#b8860b;border-color:#b8860b}
+.lb-admin #lbRemove.on{background:#13271e;color:#fff}
+@media(max-width:540px){.admin-bar{left:12px;right:12px;transform:none;bottom:10px}.admin-bar span{flex-basis:100%}}

@@ -18,6 +18,11 @@ Animal type: put "buck" or "doe" in the file or folder name, otherwise "Other".
 
 Photos taken before START_DATE (below) are skipped.
 
+Owner edits: photos listed under "removed" in docs/edits.json (saved from the
+website in owner mode) are taken off the site, their files are deleted, and
+they are never imported again. Photo files no longer used by the gallery are
+deleted too, so removing photos frees space.
+
 Run with --keep to leave originals in the inbox (only do that on your own PC).
 """
 import hashlib
@@ -35,6 +40,8 @@ DEST = ROOT / 'docs' / 'photos'
 THUMBS = DEST / 'thumbs'
 INDEX = ROOT / 'docs' / 'gallery.json'
 CAMERAS = ROOT / 'docs' / 'cameras.json'   # camera ID -> name you choose
+EDITS = ROOT / 'docs' / 'edits.json'       # favorites / removals saved from the website
+ARCHIVED = ROOT / 'uploads' / 'archived.json'  # ids moved to a zip by archive_photos.py
 EXTS = {'.jpg', '.jpeg', '.png', '.webp'}
 FULL_MAX, THUMB_MAX = 1800, 700          # pixels on the long edge
 DATE_TAGS = (36867, 36868, 306)          # DateTimeOriginal, Digitized, DateTime
@@ -116,6 +123,31 @@ def animal(path, meta):
     return 'Other'
 
 
+def read_ids(path, key=None):
+    try:
+        data = json.loads(path.read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return set()
+    return set(data.get(key, []) if key else data)
+
+
+def prune(entries, removed):
+    """Drop removed photos and delete any photo file the gallery no longer uses."""
+    kept = [p for p in entries if p['id'] not in removed]
+    used = {p.get('url') for p in kept} | {p.get('thumb') for p in kept}
+    deleted = 0
+    if not kept:  # safety: never wipe the photo folders because the list came up empty
+        return kept
+    for folder in (DEST, THUMBS):
+        for f in folder.glob('*.jpg'):
+            if str(f.relative_to(ROOT / 'docs')).replace('\\', '/') not in used:
+                f.unlink()
+                deleted += 1
+    if len(kept) != len(entries) or deleted:
+        print(f'Removed {len(entries) - len(kept)} photo(s) from the gallery, deleted {deleted} file(s).')
+    return kept
+
+
 def save_clean(img, dest, max_px, quality):
     copy = img.copy()
     copy.thumbnail((max_px, max_px), Image.LANCZOS)
@@ -129,8 +161,9 @@ def main():
     DEST.mkdir(parents=True, exist_ok=True)
     THUMBS.mkdir(parents=True, exist_ok=True)
     doc = json.loads(INDEX.read_text(encoding='utf-8')) if INDEX.exists() else {'photos': []}
-    entries = doc.get('photos', [])
-    known = {p['id'] for p in entries}
+    removed = read_ids(EDITS, 'removed')
+    entries = prune(doc.get('photos', []), removed)
+    known = {p['id'] for p in entries} | removed | read_ids(ARCHIVED)
     count = 0
     for path in sorted(INBOX.rglob('*')):
         if not path.is_file() or path.suffix.lower() not in EXTS:
