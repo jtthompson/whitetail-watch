@@ -1,87 +1,6 @@
 {
   "photos": [
     {
-      "id": "76ce87c393043ab4fb38",
-      "title": "Visitor at Feeder",
-      "type": "Other",
-      "camera": "Feeder",
-      "captured_at": "2026-11-26 11:13",
-      "url": "photos/2026-11-26-76ce87c393043ab4fb38.jpg",
-      "thumb": "photos/thumbs/2026-11-26-76ce87c393043ab4fb38.jpg"
-    },
-    {
-      "id": "cf9ada7076d31aae06d9",
-      "title": "Visitor at Feeder",
-      "type": "Other",
-      "camera": "Feeder",
-      "captured_at": "2026-11-26 11:09",
-      "url": "photos/2026-11-26-cf9ada7076d31aae06d9.jpg",
-      "thumb": "photos/thumbs/2026-11-26-cf9ada7076d31aae06d9.jpg"
-    },
-    {
-      "id": "6e2a01bdfcae7a45a35a",
-      "title": "Visitor at Feeder",
-      "type": "Other",
-      "camera": "Feeder",
-      "captured_at": "2026-11-26 11:08",
-      "url": "photos/2026-11-26-6e2a01bdfcae7a45a35a.jpg",
-      "thumb": "photos/thumbs/2026-11-26-6e2a01bdfcae7a45a35a.jpg"
-    },
-    {
-      "id": "56753de8dfa7c00e9ae6",
-      "title": "Visitor at Feeder",
-      "type": "Other",
-      "camera": "Feeder",
-      "captured_at": "2026-11-26 11:07",
-      "url": "photos/2026-11-26-56753de8dfa7c00e9ae6.jpg",
-      "thumb": "photos/thumbs/2026-11-26-56753de8dfa7c00e9ae6.jpg"
-    },
-    {
-      "id": "6cfe19daba420feeab82",
-      "title": "Visitor at Feeder",
-      "type": "Other",
-      "camera": "Feeder",
-      "captured_at": "2026-11-26 11:05",
-      "url": "photos/2026-11-26-6cfe19daba420feeab82.jpg",
-      "thumb": "photos/thumbs/2026-11-26-6cfe19daba420feeab82.jpg"
-    },
-    {
-      "id": "b14463672ec5e627eacc",
-      "title": "Visitor at Feeder",
-      "type": "Other",
-      "camera": "Feeder",
-      "captured_at": "2026-11-26 11:04",
-      "url": "photos/2026-11-26-b14463672ec5e627eacc.jpg",
-      "thumb": "photos/thumbs/2026-11-26-b14463672ec5e627eacc.jpg"
-    },
-    {
-      "id": "66b0d9937e08ee86c3d7",
-      "title": "Visitor at Feeder",
-      "type": "Other",
-      "camera": "Feeder",
-      "captured_at": "2026-11-26 11:04",
-      "url": "photos/2026-11-26-66b0d9937e08ee86c3d7.jpg",
-      "thumb": "photos/thumbs/2026-11-26-66b0d9937e08ee86c3d7.jpg"
-    },
-    {
-      "id": "7fa388e72cd99711d283",
-      "title": "Visitor at Feeder",
-      "type": "Other",
-      "camera": "Feeder",
-      "captured_at": "2026-11-26 11:02",
-      "url": "photos/2026-11-26-7fa388e72cd99711d283.jpg",
-      "thumb": "photos/thumbs/2026-11-26-7fa388e72cd99711d283.jpg"
-    },
-    {
-      "id": "a6bcfa75a45959bd1775",
-      "title": "Visitor at Feeder",
-      "type": "Other",
-      "camera": "Feeder",
-      "captured_at": "2026-11-26 11:01",
-      "url": "photos/2026-11-26-a6bcfa75a45959bd1775.jpg",
-      "thumb": "photos/thumbs/2026-11-26-a6bcfa75a45959bd1775.jpg"
-    },
-    {
       "id": "3e78d050e1b365af4dd6",
       "title": "Visitor at Power Line",
       "type": "Other",
@@ -89,24 +8,6 @@
       "captured_at": "2026-11-26 10:53",
       "url": "photos/2026-11-26-3e78d050e1b365af4dd6.jpg",
       "thumb": "photos/thumbs/2026-11-26-3e78d050e1b365af4dd6.jpg"
-    },
-    {
-      "id": "a56432cda94f4b77d888",
-      "title": "Visitor at Power Line",
-      "type": "Other",
-      "camera": "Power Line",
-      "captured_at": "2026-11-26 10:49",
-      "url": "photos/2026-11-26-a56432cda94f4b77d888.jpg",
-      "thumb": "photos/thumbs/2026-11-26-a56432cda94f4b77d888.jpg"
-    },
-    {
-      "id": "a00c0d3b08de7547d937",
-      "title": "Visitor at Power Line",
-      "type": "Other",
-      "camera": "Power Line",
-      "captured_at": "2026-11-26 10:48",
-      "url": "photos/2026-11-26-a00c0d3b08de7547d937.jpg",
-      "thumb": "photos/thumbs/2026-11-26-a00c0d3b08de7547d937.jpg"
     },
     {
       "id": "403af97d7d7d873dd097",
@@ -118,24 +19,6 @@
       "thumb": "photos/thumbs/2026-11-26-403af97d7d7d873dd097.jpg"
     },
     {
-      "id": "1179100601784a271c00",
-      "title": "Visitor at Power Line",
-      "type": "Other",
-      "camera": "Power Line",
-      "captured_at": "2026-11-26 10:47",
-      "url": "photos/2026-11-26-1179100601784a271c00.jpg",
-      "thumb": "photos/thumbs/2026-11-26-1179100601784a271c00.jpg"
-    },
-    {
-      "id": "e4843b0f968aa4196a81",
-      "title": "Visitor at Power Line",
-      "type": "Other",
-      "camera": "Power Line",
-      "captured_at": "2026-11-26 10:45",
-      "url": "photos/2026-11-26-e4843b0f968aa4196a81.jpg",
-      "thumb": "photos/thumbs/2026-11-26-e4843b0f968aa4196a81.jpg"
-    },
-    {
       "id": "39c100ce317159cf39d9",
       "title": "Visitor at Power Line",
       "type": "Other",
@@ -143,15 +26,6 @@
       "captured_at": "2026-11-26 10:31",
       "url": "photos/2026-11-26-39c100ce317159cf39d9.jpg",
       "thumb": "photos/thumbs/2026-11-26-39c100ce317159cf39d9.jpg"
-    },
-    {
-      "id": "719a9b7adb70d47291d2",
-      "title": "Visitor at Feeder",
-      "type": "Other",
-      "camera": "Feeder",
-      "captured_at": "2026-11-26 10:28",
-      "url": "photos/2026-11-26-719a9b7adb70d47291d2.jpg",
-      "thumb": "photos/thumbs/2026-11-26-719a9b7adb70d47291d2.jpg"
     },
     {
       "id": "d670416e25742cc6d556",
@@ -179,33 +53,6 @@
       "captured_at": "2026-11-26 10:18",
       "url": "photos/2026-11-26-7abcfab38724a43023c9.jpg",
       "thumb": "photos/thumbs/2026-11-26-7abcfab38724a43023c9.jpg"
-    },
-    {
-      "id": "7b7f14fcb906b8851d87",
-      "title": "Visitor at Power Line",
-      "type": "Other",
-      "camera": "Power Line",
-      "captured_at": "2026-11-26 10:17",
-      "url": "photos/2026-11-26-7b7f14fcb906b8851d87.jpg",
-      "thumb": "photos/thumbs/2026-11-26-7b7f14fcb906b8851d87.jpg"
-    },
-    {
-      "id": "c5f0dc29955d27500025",
-      "title": "Visitor at Power Line",
-      "type": "Other",
-      "camera": "Power Line",
-      "captured_at": "2026-11-26 08:36",
-      "url": "photos/2026-11-26-c5f0dc29955d27500025.jpg",
-      "thumb": "photos/thumbs/2026-11-26-c5f0dc29955d27500025.jpg"
-    },
-    {
-      "id": "44cd8f613d9f4197b8fd",
-      "title": "Visitor at Power Line",
-      "type": "Other",
-      "camera": "Power Line",
-      "captured_at": "2026-11-26 08:34",
-      "url": "photos/2026-11-26-44cd8f613d9f4197b8fd.jpg",
-      "thumb": "photos/thumbs/2026-11-26-44cd8f613d9f4197b8fd.jpg"
     },
     {
       "id": "3d5f949ecf4dee1f78ed",
