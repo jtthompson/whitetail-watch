@@ -1,6 +1,15 @@
 {
   "photos": [
     {
+      "id": "3d5f949ecf4dee1f78ed",
+      "title": "Visitor at Power Line",
+      "type": "Other",
+      "camera": "Power Line",
+      "captured_at": "2026-11-26 04:14",
+      "url": "photos/2026-11-26-3d5f949ecf4dee1f78ed.jpg",
+      "thumb": "photos/thumbs/2026-11-26-3d5f949ecf4dee1f78ed.jpg"
+    },
+    {
       "id": "d70960bdafefae753e45",
       "title": "Visitor at Power Line",
       "type": "Other",
