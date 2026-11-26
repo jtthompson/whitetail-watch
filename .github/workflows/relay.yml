@@ -1,0 +1,33 @@
+name: Hourly relay
+
+# GitHub runs the hourly cron in import.yml only every few hours when it is
+# busy. This relay waits about an hour, starts the import, then starts itself
+# again, so photos keep arriving roughly hourly. The cron below restarts the
+# chain if it ever breaks. Public repo, so the idle wait costs nothing.
+
+on:
+  schedule:
+    - cron: "47 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+concurrency:
+  group: relay
+  cancel-in-progress: false
+
+jobs:
+  relay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - name: Wait about an hour
+        run: sleep 3300
+      - name: Start the import, then the next relay
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh workflow run import.yml --ref main
+          gh workflow run relay.yml --ref main
