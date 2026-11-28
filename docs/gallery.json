@@ -1,6 +1,15 @@
 {
   "photos": [
     {
+      "id": "26b68989665f5b4f32ce",
+      "title": "Visitor at Feeder",
+      "type": "Other",
+      "camera": "Feeder",
+      "captured_at": "2026-11-27 22:52",
+      "url": "photos/2026-11-27-26b68989665f5b4f32ce.jpg",
+      "thumb": "photos/thumbs/2026-11-27-26b68989665f5b4f32ce.jpg"
+    },
+    {
       "id": "740b75e3a877c6d88496",
       "title": "Visitor at Feeder",
       "type": "Other",
